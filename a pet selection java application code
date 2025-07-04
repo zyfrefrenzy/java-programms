@@ -1,0 +1,115 @@
+/*name frenzy gatheru
+Reg No:BSE-05-0163/2024
+Group:Group 3
+a java application code for a pet selection app
+*/
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Assignment2Oop extends JFrame { // Class name 
+
+    private JRadioButton birdButton, catButton, dogButton, rabbitButton, pigButton;
+    private JLabel imageLabel;
+    private ButtonGroup buttonGroup;
+    private Map<String, ImageIcon> imageMap;
+
+    public Assignment2Oop() { // Constructor
+        setTitle("RadioButtonDemo");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        imageMap = new HashMap<>();
+        loadImageIcons();
+
+        birdButton = new JRadioButton("Bird");
+        catButton = new JRadioButton("Cat");
+        dogButton = new JRadioButton("Dog");
+        rabbitButton = new JRadioButton("Rabbit");
+        pigButton = new JRadioButton("Pig");
+
+        // Set Pig as initially selected based on the prompt's image
+        pigButton.setSelected(true);
+
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(birdButton);
+        buttonGroup.add(catButton);
+        buttonGroup.add(dogButton);
+        buttonGroup.add(rabbitButton);
+        buttonGroup.add(pigButton);
+
+        JPanel radioPanel = new JPanel();
+        radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
+        radioPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        radioPanel.add(birdButton);
+        radioPanel.add(catButton);
+        radioPanel.add(dogButton);
+        radioPanel.add(rabbitButton);
+        radioPanel.add(pigButton);
+
+        imageLabel = new JLabel();
+        imageLabel.setHorizontalAlignment(JLabel.CENTER);
+
+        // Set initial image (Pig, since it's selected)
+        imageLabel.setIcon(imageMap.get("Pig"));
+
+        add(radioPanel, BorderLayout.WEST);
+        add(imageLabel, BorderLayout.CENTER);
+
+        ActionListener radioListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedPet = ((JRadioButton) e.getSource()).getText();
+                imageLabel.setIcon(imageMap.get(selectedPet));
+                // Reference to outer class changed to Assignment2Oop.this
+                JOptionPane.showMessageDialog(Assignment2Oop.this,
+                        "You selected: " + selectedPet,
+                        "Pet Selection",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        };
+
+        birdButton.addActionListener(radioListener);
+        catButton.addActionListener(radioListener);
+        dogButton.addActionListener(radioListener);
+        rabbitButton.addActionListener(radioListener);
+        pigButton.addActionListener(radioListener);
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    /**
+     * Loads image icons from the 'images' folder into the imageMap.
+     * Ensure the 'images' folder is correctly placed in your project's classpath.
+     */
+    private void loadImageIcons() {
+        try {
+            // Using getClass().getResource() for robust resource loading, especially for JAR files.
+            imageMap.put("Bird", new ImageIcon(getClass().getResource("/images/bird.png")));
+            imageMap.put("Cat", new ImageIcon(getClass().getResource("/images/cat.png")));
+            imageMap.put("Dog", new ImageIcon(getClass().getResource("/images/dog.png")));
+            imageMap.put("Rabbit", new ImageIcon(getClass().getResource("/images/rabbit.png")));
+            imageMap.put("Pig", new ImageIcon(getClass().getResource("/images/pig.png")));
+        } catch (NullPointerException e) {
+            System.err.println("Error: One or more image files not found. " +
+                               "Check 'images' folder in classpath.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        // Run GUI on the Event Dispatch Thread (EDT)
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new Assignment2Oop(); // Object creation changed
+            }
+        });
+    }
+}
